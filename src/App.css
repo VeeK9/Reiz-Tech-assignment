@@ -20,18 +20,39 @@ button {
   border: 0;
 }
 
+.buttons {
+  display: flex;
+  justify-content: space-between;
+
+  button {
+    transition: 0.2s;
+  }
+  
+  button:hover {
+    cursor: pointer;
+    background-color: rgb(100, 255, 100);
+  }
+}
+
 * {
   letter-spacing: 1px;
   font-weight: 400;
 }
 
 .list {
+  list-style-type: none;
+  padding: 0;
 
   > .listItem {
     background-color: rgb(204, 255, 204);
     margin: 10px 0;
     padding: 1em;
     border-radius: 0.5em;
+    transition: 0.5s;
+
+    &:hover {
+      background-color: rgb(190, 255, 190);
+    }
 
     > * {
       padding: 0;
