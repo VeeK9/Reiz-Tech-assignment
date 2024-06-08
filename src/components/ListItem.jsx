@@ -1,7 +1,9 @@
-const ListItem = () => {
+const ListItem = ({country}) => {
   return (
     <div className="listItem">
-      <h4>Country nr.</h4>
+      <h2>{country.name}</h2>
+      <h4>Region: {country.region}</h4>
+      <h4>Area size: {country.area} km&sup2;</h4>
     </div>
   );
 }
