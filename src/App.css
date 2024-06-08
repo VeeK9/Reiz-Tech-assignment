@@ -6,49 +6,58 @@ body {
   background-color: rgb(227, 255, 227);
   color: rgb(120, 150, 120);
   font-family: roboto;
-}
-
-div {
   box-sizing: border-box;
-  padding: 10px;
 }
 
-button {
-  background-color: rgb(143, 255, 143);
-  padding: 0.5em;
-  border-radius: 0.5em;
-  border: 0;
+#root {
+  padding: 3em;
+  letter-spacing: 1px;
 }
 
 .buttons {
   display: flex;
   justify-content: space-between;
+  margin: 0;
+  padding: 1em 0;
 
-  button {
+  select, button {
+    background-color: rgb(143, 255, 143);
     transition: 0.2s;
+    border-radius: 0.5em;
+    padding: 0.5em 1em;
+    border: 0;
+    color: black;
   }
-  
-  button:hover {
+
+  select {
+    appearance: none;
+  }
+
+  button:hover, select:hover {
     cursor: pointer;
     background-color: rgb(100, 255, 100);
   }
 }
 
+h1 {
+  font-weight: 700;
+  margin-top: 0;
+}
 * {
-  letter-spacing: 1px;
   font-weight: 400;
 }
 
 .list {
   list-style-type: none;
   padding: 0;
+  margin: 0;
 
-  > .listItem {
+  .listItem {
     background-color: rgb(204, 255, 204);
     margin: 10px 0;
     padding: 1em;
     border-radius: 0.5em;
-    transition: 0.5s;
+    transition: 0.1s;
 
     &:hover {
       background-color: rgb(190, 255, 190);

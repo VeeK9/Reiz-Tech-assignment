@@ -1,23 +1,17 @@
 import { useEffect, useState } from "react";
 import ListItem from "./ListItem";
-import Button from "./Button";
-
-const URL = 'https://restcountries.com/v2/all?fields=name,region,area';
-// const URL = 'https://jsonplaceholder.typicode.com/users';
 
 const List = () => {
 
   const [data, setData] = useState();
   const [error, setError] = useState();
   const [ascending, setAscending] = useState(true);
-  const [countries, setCountries] = useState([]);
-  const [sizeFilter, setSizeFilter] = useState(false);
-  const [regionFilter, setRegionFilter] = useState(false);
+  const [countries, setCountries] = useState();
 
   useEffect(()=> {
     const fetchData = async () => {
       try {
-        const response = await fetch(URL);
+        const response = await fetch('https://restcountries.com/v2/all?fields=name,region,area');
         const result = await response.json();
         setData(result.sort((a,b)=>a.name.localeCompare(b.name)))
         setCountries(result.sort((a,b)=>a.name.localeCompare(b.name)))
@@ -27,14 +21,6 @@ const List = () => {
     }
     fetchData();
   }, []);
-
-  // useEffect(()=> {
-  //   if (!ascending) {
-  //     setCountries(countries.sort((a,b)=>a.name.localeCompare(b.name)));
-  //   } else {
-  //     setCountries(countries.sort((a,b)=>b.name.localeCompare(a.name)));
-  //   }
-  // }, [ascending])
 
   const sortedCountries = (ascending) => {
       if (!ascending) {
@@ -49,55 +35,53 @@ const List = () => {
     setAscending(!ascending);
   }
 
-  // useEffect(()=> {
-  //   if (sizeFilter) {
-  //     setCountries(countries.filter(country => country.area < 65300))
-  //   } else {
-  //     setCountries(data)
-  //   }
-  // }, [sizeFilter])
-
-  // useEffect(()=> {
-  //   if (regionFilter) {
-  //     setCountries(countries.filter(country => country.region.toLowerCase().includes('oceania')))
-  //   } else {
-  //     setCountries(data)
-  //   }
-  // }, [regionFilter])
+  const handleFilterSelect = (e) => {
+    if (e.target.value === 'smallerThanLithuania'){
+      setCountries(data.filter(country => country.area < 65300))
+    } else if (e.target.value === 'oceaniaRegion'){
+      setCountries(data.filter(country => country.region.toLowerCase() == 'oceania'))
+    } else {
+      if (ascending) {
+        setCountries(data.sort((a,b)=>a.name.localeCompare(b.name)));
+      } else {
+        setCountries(data.sort((a,b)=>b.name.localeCompare(a.name)));}
+    }
+  }
 
   return (
     <>
       <h1>Countries of the World.</h1>
-      <div className="buttons">
-        <div className="filters">
-          <Button
-            func={()=>setSizeFilter(!sizeFilter)}
-            title={sizeFilter ? 'Show All' : 'Smaller than Lithuania'} />
-          <Button
-            func={()=>setRegionFilter(!regionFilter)}
-            title={regionFilter ? 'Show All' : 'In Oceania region'} />
-        </div>
-        <div className="sort">
-          <Button
-          func={handleSortCountriesButton}
-          title={ascending ? 'A-Z' : 'Z-A'} />
-        </div>
-      </div>
-      <ul className="list">
-        {
-          error ?
-          <h3>Something went wrong.</h3>
-          :
-          countries ?
-          countries.map((country, idx) =>
-            <ListItem
-              country={country}
-              key={idx}
-            />
-          )
-          : <h3>Countries are loading...</h3>
-        }
-      </ul>
+      {
+        error ?
+        <h3>Something went wrong.</h3>
+        :
+        countries ?
+        <div>
+          <div className="buttons">
+            <div className="filters">
+              <select className='select' name="filter" id="filter" onChange={(e)=>handleFilterSelect(e)}>
+                <option value="all">All Countries</option>
+                <option value="smallerThanLithuania">Smaller than Lithuania</option>
+                <option value="oceaniaRegion">Oceania region</option>
+              </select>
+            </div>
+            <div className="sort">
+              <button onClick={handleSortCountriesButton}>
+                {ascending ? 'sorting: A-Z' : 'sorting: Z-A'}
+              </button>
+            </div>
+          </div>
+          <ul className="list">
+              {
+                countries.map((country, idx) =>
+                  <ListItem
+                    country={country}
+                    key={idx}/>)
+              }
+            </ul>
+          </div>
+      : <h3>Countries are loading...</h3>
+      }
     </>
   );
 }
