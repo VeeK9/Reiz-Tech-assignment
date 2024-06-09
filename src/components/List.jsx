@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ListItem from "./ListItem";
+import Pagination from "./Pagination";
 
 const List = () => {
 
@@ -8,6 +9,10 @@ const List = () => {
   const [ascending, setAscending] = useState(true);
   const [countries, setCountries] = useState();
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [countriesPerPage, setCountriesPerPage] = useState(10);
+  const [allCountries, setAllCountries] = useState(0);
+
   useEffect(()=> {
     const fetchData = async () => {
       try {
@@ -15,6 +20,7 @@ const List = () => {
         const result = await response.json();
         setData(result.sort((a,b)=>a.name.localeCompare(b.name)))
         setCountries(result.sort((a,b)=>a.name.localeCompare(b.name)))
+        setAllCountries(result.length)
       } catch (error) {
         setError(error);
       }
@@ -22,12 +28,16 @@ const List = () => {
     fetchData();
   }, []);
 
+  const lastIndex = currentPage * countriesPerPage;
+  const firstIndex = lastIndex - countriesPerPage;
+
   const sortedCountries = (ascending) => {
       if (!ascending) {
         setCountries(countries.sort((a,b)=>a.name.localeCompare(b.name)));
       } else {
         setCountries(countries.sort((a,b)=>b.name.localeCompare(a.name)));
       }
+    setCurrentPage(1);
   }
 
   const handleSortCountriesButton = () => {
@@ -45,43 +55,45 @@ const List = () => {
         setCountries(data.sort((a,b)=>a.name.localeCompare(b.name)));
       } else {
         setCountries(data.sort((a,b)=>b.name.localeCompare(a.name)));}
-    }
+      }
+    setAllCountries(countries.length);
+    setCurrentPage(1);
   }
 
   return (
     <>
-      <h1>Countries of the World.</h1>
       {
         error ?
         <h3>Something went wrong.</h3>
         :
         countries ?
-        <div>
-          <div className="buttons">
-            <div className="filters">
-              <select className='select' name="filter" id="filter" onChange={(e)=>handleFilterSelect(e)}>
-                <option value="all">All Countries</option>
-                <option value="smallerThanLithuania">Smaller than Lithuania</option>
-                <option value="oceaniaRegion">Oceania region</option>
-              </select>
+          <div>
+            <div className="buttons">
+              <div className="filters">
+                <select className='select' name="filter" id="filter" onChange={(e)=>handleFilterSelect(e)}>
+                  <option value="all">All Countries</option>
+                  <option value="smallerThanLithuania">Smaller than Lithuania</option>
+                  <option value="oceaniaRegion">Oceania region</option>
+                </select>
+              </div>
+              <div className="sort">
+                <button onClick={handleSortCountriesButton}>
+                  {ascending ? 'sorting: A-Z' : 'sorting: Z-A'}
+                </button>
+              </div>
             </div>
-            <div className="sort">
-              <button onClick={handleSortCountriesButton}>
-                {ascending ? 'sorting: A-Z' : 'sorting: Z-A'}
-              </button>
-            </div>
-          </div>
-          <ul className="list">
+            <ul className="list">
               {
-                countries.map((country, idx) =>
+                countries.slice(firstIndex, lastIndex).map((country, idx) =>
                   <ListItem
                     country={country}
                     key={idx}/>)
               }
             </ul>
           </div>
-      : <h3>Countries are loading...</h3>
+        : <h3>Countries are loading...</h3>
       }
+      <Pagination currentPage={currentPage} countriesPerPage={countriesPerPage} allCountries={allCountries} setCurrentPage={setCurrentPage}/>
     </>
   );
 }
