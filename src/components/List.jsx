@@ -10,7 +10,7 @@ const List = () => {
   const [countries, setCountries] = useState();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [countriesPerPage, setCountriesPerPage] = useState(10);
+  const [countriesPerPage, setCountriesPerPage] = useState(30);
   const [allCountries, setAllCountries] = useState(0);
 
   useEffect(()=> {
